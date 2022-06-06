@@ -17,20 +17,43 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
+  await deploy("UniswapV2Factory", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [ '0xEA5A52f732BE2eCD218224f896431660FBa8512D' ],
     log: true,
     waitConfirmations: 5,
   });
 
   // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
+  const UniswapV2Factory = await ethers.getContract("UniswapV2Factory", deployer);
+  let factoryAddr = UniswapV2Factory.address;
+
+  await deploy("WETH9", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ '0xEA5A52f732BE2eCD218224f896431660FBa8512D' ],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  const WETH9 = await ethers.getContract("WETH9", deployer);
+  let wethAddr = WETH9.address;
+
+  await deploy("UniswapV2Router02", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    args: [ factoryAddr, wethAddr ],
+    log: true,
+    waitConfirmations: 5,
+  });
+
+  const UniswapV2Router02 = await ethers.getContract("UniswapV2Router02", deployer);
+
   /*  await YourContract.setPurpose("Hello");
-  
-    To take ownership of yourContract using the ownable library uncomment next line and add the 
-    address you want to be the owner. 
+
+    To take ownership of yourContract using the ownable library uncomment next line and add the
+    address you want to be the owner.
     // await yourContract.transferOwnership(YOUR_ADDRESS_HERE);
 
     //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!

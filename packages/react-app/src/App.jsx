@@ -320,7 +320,17 @@ function App(props) {
             */}
 
           <Contract
-            name="YourContract"
+            name="UniswapV2Factory"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+
+          <Contract
+            name="UniswapV2Router02"
             price={price}
             signer={userSigner}
             provider={localProvider}
